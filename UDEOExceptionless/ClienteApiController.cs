@@ -9,11 +9,24 @@ namespace UDEOExceptionless
 {
     public class ClienteApiController : ApiController
     {
+        private UdeoEntities db = new UdeoEntities();
+        public ExceptionLess_ ex = new ExceptionLess_();
+
         // GET api/<controller>
-        public IEnumerable<string> Get()
+
+        public IQueryable<Cliente> Get()
         {
-            return new string[] { "value1", "value2" };
+            try
+            {
+                ex.info("Lista de Clientes");
+                return db.Clientes;
+            } catch (Exception e)
+            {
+                ex.error("Error en mostar data clientes");
+                return null;
+            }
         }
+         
 
         // GET api/<controller>/5
         public string Get(int id)
