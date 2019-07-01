@@ -22,7 +22,7 @@ namespace UDEOExceptionless
                 return db.Clientes;
             } catch (Exception e)
             {
-                ex.error("Error en mostar data clientes");
+                ex.error("Error al listar clientes: " + e.ToString());
                 return null;
             }
         }
@@ -34,10 +34,45 @@ namespace UDEOExceptionless
             return "value";
         }
 
+
+
         // POST api/<controller>
-        public void Post([FromBody]string value)
+        public void Post([FromBody]Cliente cliente)
         {
+            try
+            {
+                ex.info("Creando nuevo cliente: " + cliente.ToString());
+                db.Clientes.Add(cliente);
+                db.SaveChanges();
+            }
+            catch (Exception e)
+            {
+                ex.error("Error al crear clientes: " + e.ToString());
+                throw;
+            }
         }
+
+        /*public IHttpActionResult Post(Cliente cliente)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            try
+            {
+                ex.info("Creando nuevo cliente");
+                db.Clientes.Add(cliente);
+                db.SaveChanges();
+                return CreatedAtRoute("DefaultApi", new { id = cliente.id }, cliente);
+            }
+            catch (Exception e)
+            {
+                ex.error("Error en mostar data clientes");
+                return null;
+            }
+        }*/
+
 
         // PUT api/<controller>/5
         public void Put(int id, [FromBody]string value)
