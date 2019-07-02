@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Balance de Donaciones</title>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <script src="https://code.jquery.com/jquery-2.2.4.js" integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI=" crossorigin="anonymous"></script>
+
+</head>
+
+<body>
+    <div id="app">
+        <div class="container">
+            <div class="row">
+              <div class="col-md-8">
+                  <h1>Balance de Donaciones</h1>
+                  <p>&nbsp;</p>
+                  <p><a href="donaciones.html">Nueva Donacion</a> - <a href="clientes.html">Nuevo cliente</a></p>
+              </div>
+            </div>
+            <div class="row">
+                <div class="col-md-8">
+                    <template v-if="loading">
+                      <table class="table" style="text-align: right;">
+                        <tr>
+                          <td>Cliente</td>
+                          <td>Mes</td>
+                          <td>Anio</td>
+                          <td>Monto Donacion</td>
+                        </tr>
+                        <tr v-for="(donacion_, index) in donaciones">
+                          <template v-if="donacion_.Cliente_id != '' && donacion_.Mes !='' ">
+                            <td>{{ donacion_.Cliente_id }}</td>
+                            <td>{{ donacion_.Mes }}</td>
+                            <td>{{ donacion_.Anio }}</td>
+                            <td>$ {{ donacion_.Donacion_monto.toFixed(2) }}</td>
+                          </template>
+                        </tr>
+                        <tr>
+                          <td colspan="3">Total</td>
+                          <td colspan="2">$ {{ total_donaciones.toFixed(2) }} </td>
+                        </tr>
+                      </table>
+                    </template>
+                </div>
+
+                <div class="col-md-4">
+                    <table class="table" style="text-align: right;">
+                      <tr>
+                        <td>Gastos de  servicios 5%</td>
+                        <td>{{ gastos_servicios.toFixed(2) }}</td>
+                      </tr>
+                      <tr>
+                        <td>Gastos de  publicidad 10%</td>
+                        <td>{{ gastos_publicidad.toFixed(2) }}</td>
+                      </tr>
+                      <tr>
+                        <td>Caja Chica 85%</td>
+                        <td>{{caja_chica.toFixed(2) }}</td>
+                      </tr>
+                      <tr>
+                        <td><strong>Total </strong></td>
+                        <td><strong>{{ total_donaciones.toFixed(2) }}</strong></td>
+                      </tr>
+                      <tr>
+                        <td>IVA 12%</td>
+                        <td>{{ iva.toFixed(2) }}</td>
+                      </tr>
+                      <tr>
+                        <td>ISR 5%</td>
+                        <td>{{ isr.toFixed(2) }}</td>
+                      </tr>
+                    </table>
+                    <p>IVA e ISR se calculo sobre caja chica para que coincidan los montos.</p>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <script src="https://unpkg.com/vue/dist/vue.js"></script>
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+    <script src="https://unpkg.com/vue-form-wizard/dist/vue-form-wizard.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script>
+        /*window.onbeforeunload = function() {
+                    return "Desea realmente recargar la página?";
+                }*/
+
+        new Vue({
+            el: '#app',
+            components: {},
+            data: {
+
+                errors: [],
+                loading: true,
+                donaciones: [],
+
+                iva: 0,
+                isr: 0,
+                caja_chica: 0,
+                total_donaciones: 0,
+                gastos_servicios: 0,
+                gastos_publicidad:0,
+
+                form: {
+                },
+                rules: {
+
+                }
+            },
+            mounted() {
+
+              this.$loading({ fullscreen: true });
+
+              let urlDonaciones = axios.get('http://localhost:59681/Api/DonacionsApi/lista' + window.location.search)
+
+              return urlDonaciones.then((callback) => 
+              {
+                this.donaciones = callback.data;
+
+                var total1 = 0;
+                this.donaciones.forEach(function(item, index) {
+                  console.log(item.Donacion_monto);
+                  total1 += item.Donacion_monto;
+                });
+
+                this.total_donaciones = total1;
+
+                console.log(this.total_donaciones);
+
+                this.gastos_servicios = this.total_donaciones * 0.05;
+                this.gastos_publicidad = this.total_donaciones * 0.10;
+                this.caja_chica = this.total_donaciones * 0.85;
+
+                this.iva = this.caja_chica * 0.12;
+                this.isr = this.caja_chica * 0.05;
+
+                this.$loading({ fullscreen: true }).close();
+                this.loading = true;
+               // return;
+              });
+
+            },
+            computed: {
+
+            },
+            methods: {
+                setUrl(mes, anio){
+                  return "balance.html?mes=" + mes + "&anio=" + anio;
+                }, 
+            }
+        })
+    </script>
+</body>
+
+</html>

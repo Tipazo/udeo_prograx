@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Donaciones</title>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <script src="https://code.jquery.com/jquery-2.2.4.js" integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI=" crossorigin="anonymous"></script>
+
+</head>
+
+<body>
+    <div id="app">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <h1>Donaciones</h1>
+                    <p><a href="clientes.html">Nuevo cliente</a></p>
+                    <el-tabs type="border-card" v-if="loading">
+                        <el-tab-pane label="Lista de donaciones">
+                          <template>
+
+                            <table class="table">
+                              <tr>
+                                <td>Cliente</td>
+                                <td>Mes</td>
+                                <td>Anio</td>
+                                <td>Monto Donacion</td>
+                                <td>&nbsp;</td>
+                              </tr>
+                              <tr v-for="(donacion_, index) in donaciones" v-bind:key="donacion_.id">
+                                <td>{{ donacion_.Cliente_id }}</td>
+                                <td>{{ donacion_.Mes }}</td>
+                                <td>{{ donacion_.Anio }}</td>
+                                <td>$ {{ donacion_.Donacion_monto }}</td>
+                                <td> <a :href='setUrl(donacion_.Mes, donacion_.Anio)'> Ver Balance </td>
+                              </tr>
+                            </table>
+                          </template>
+                        </el-tab-pane>
+                        <el-tab-pane label="Crear una donacion">
+  
+                            <h2>Crear donacion</h2>
+                            <el-form :model="form" :rules="rules" ref="form" class="grid-form">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <el-form-item prop="Cliente_id" :rules="rules.Cliente_id">
+                                                <label>Cliente</label> <br />
+                                               <el-select v-model="form.Cliente_id" placeholder="Seleccione el cliente" @change="setCurrentCliente" >
+                                                  <el-option
+                                                    v-for="item in clientes"
+                                                    :key="item.id"
+                                                    :label="item.Nombre"
+                                                    :value="item.id">
+                                                  </el-option>
+                                                </el-select>
+                                            </el-form-item>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                      <div class="form-group">
+                                          <el-form-item prop="Donacion_porcentaje" :rules="rules.Donacion_porcentaje">
+                                            <label>Porcentaje donacion</label> <br />
+                                            <el-radio-group v-model="form.Donacion_porcentaje" size="medium" @change="calcularDonacion">
+                                              <el-radio-button label="5">5%</el-radio-button>
+                                              <el-radio-button label="10">10%</el-radio-button>
+                                            </el-radio-group>
+                                          </el-form-item>
+                                      </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="form-group">
+                                            <el-form-item prop="Mes" :rules="rules.Mes">
+                                                <label>Mes</label> <br />
+                                               <el-select v-model="form.Mes" placeholder="Seleccione el mes">
+                                                  <el-option
+                                                    v-for="mes in meses"
+                                                    :key="mes"
+                                                    :label="mes"
+                                                    :value="mes">
+                                                  </el-option>
+                                                </el-select>
+                                            </el-form-item>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="form-group">
+                                            <el-form-item prop="Anio" :rules="rules.Anio">
+                                                <label>Anio</label> <br />
+                                               <el-select v-model="form.Anio" placeholder="Seleccione el anio">
+                                                  <el-option
+                                                    v-for="anio in anios"
+                                                    :key="anio"
+                                                    :label="anio"
+                                                    :value="anio">
+                                                  </el-option>
+                                                </el-select>
+                                            </el-form-item>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                      <div class="form-group">
+                                          <el-form-item>
+                                              <label>$ Donacion</label>
+                                              <input type="text" class="form-control" v-model="form.Donacion_monto" readonly>
+                                          </el-form-item>
+                                      </div>
+                                    </div>
+                                </div>
+                                <el-form-item>
+                                    <el-button @click="clearInputs()" type="danger" size="mini"><i class="fal fa-times"></i> Cancel</el-button>
+                                    <el-button type="primary" @click="submitForm('form')" size="mini"><i class="fal fa-save"></i> Guardar</el-button>
+                                </el-form-item>
+                            </el-form>
+
+                        </el-tab-pane>
+                    </el-tabs>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://unpkg.com/vue/dist/vue.js"></script>
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+    <script src="https://unpkg.com/vue-form-wizard/dist/vue-form-wizard.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script>
+        /*window.onbeforeunload = function() {
+                    return "Desea realmente recargar la página?";
+                }*/
+
+        new Vue({
+            el: '#app',
+            components: {},
+            data: {
+
+                errors: [],
+                total_donacion: "",
+                loading: true,
+                meses: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre","Noviembre", "Diciembre"],
+                anios :["2019", "2020"],
+                donaciones: [],
+                clientes: [],
+
+                form: {
+                    Cliente_id: "",
+                    Mes: "",
+                    Anio: "",
+                    Donacion_porcentaje: "",
+                    Donacion_monto: "",
+                    Pib: "",
+                },
+                rules: {
+                    Cliente_id: [{ required: true, message: 'Requerido', trigger: 'blur' }],
+                    Mes: [{ required: true, message: 'Requerido de tipo integer', trigger: 'blur' }],
+                    Anio: [{ required: true, message: 'Requerido', trigger: 'blur' }],
+                    Donacion_monto: [{ required: true, message: 'Requerido', trigger: 'blur' }],
+                    Donacion_porcentaje: [{ required: true, message: 'Requerido', trigger: 'blur' }],
+                }
+            },
+            mounted() {
+                this.$loading({ fullscreen: true });
+                let urlClientes = axios.get('http://localhost:59681/Api/ClienteApi')
+
+                return urlClientes.then((callback) => 
+                {
+                  this.clientes = callback.data;
+
+                  let urlDonaciones = axios.get('http://localhost:59681/Api/DonacionsApi')
+
+                  return urlDonaciones.then((callback) => 
+                  {
+                    this.donaciones = callback.data;
+                    this.$loading({ fullscreen: true }).close();
+                    this.loading = true;
+                    return;
+                  });
+                });
+
+            },
+            computed: {
+
+            },
+            methods: {
+                submitForm (formName) {
+                  this.$refs[formName].validate(valid => {
+                    if (valid) {
+                      console.log(this.form)
+                      axios.post('http://localhost:59681/Api/DonacionsApi', this.form)
+                        .then(response => {
+                          console.log(response.data);
+                          this.clearInputs();
+                        })
+                        .catch(e => {
+                          this.errors.push(e);
+                        })
+                    }
+                  })
+                },
+                setCurrentCliente(ctx) {
+                  console.log("index: " + ctx);
+                  var currentItem = this.clientes[ctx - 1];
+                  console.log(currentItem);
+
+                  this.form.Donacion_porcentaje = currentItem.Donacion_porcentaje;
+                  this.form.Pib = currentItem.Pib;
+                  this.calcularDonacion();
+                },
+                calcularDonacion(){
+                  if (this.form.Donacion_porcentaje != "") {
+                    this.form.Donacion_monto = (this.form.Pib * this.form.Donacion_porcentaje) / 100;
+                  }
+                },
+                setUrl(mes, anio){
+                  return "balance.html?mes=" + mes + "&anio=" + anio;
+                }, 
+                clearInputs () {
+                  this.form = {
+                    Nombre: "",
+                    Pib: "",
+                    Tipo_negocio: "",
+                    donacion: "",
+                    direccion: "",
+                  }
+                },
+            }
+        })
+    </script>
+</body>
+
+</html>

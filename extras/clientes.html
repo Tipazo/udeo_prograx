@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Clientes</title>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <script src="https://code.jquery.com/jquery-2.2.4.js" integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI=" crossorigin="anonymous"></script>
+
+</head>
+
+<body>
+    <div id="app">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <h1>Clientes</h1>
+                    <p><a href="donaciones.html">Nueva Donacion</a></p>
+                    <el-tabs type="border-card" v-if="loading">
+                        <el-tab-pane label="Lista de Clientes">
+                          <template>
+
+                            <table class="table">
+                              <tr>
+                                <td>Nombre</td>
+                                <td>Pib</td>
+                                <td>Tipo_negocio</td>
+                                <td>Donacion</td>
+                              </tr>
+                              <tr v-for="(cliente_, index) in clientes">
+                                <td>{{ cliente_.Nombre }}</td>
+                                <td>$ {{ cliente_.Pib }}</td>
+                                <td>{{ cliente_.Tipo_negocio }}</td>
+                                <td>% {{ cliente_.Donacion_porcentaje }}</td>
+                              </tr>
+                            </table>
+                          </template>
+                        </el-tab-pane>
+                        <el-tab-pane label="Crear cliente">
+  
+                            <h2>Crear Cliente</h2>
+                            <el-form :model="form" :rules="rules" ref="form" class="grid-form">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <el-form-item prop="Nombre" :rules="rules.Nombre">
+                                                <label>Nombre del cliente</label>
+                                                <input type="text" class="form-control" v-model="form.Nombre">
+                                            </el-form-item>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <el-form-item prop="Tipo_negocio" :rules="rules.Tipo_negocio">
+                                                <label>Tipo Negocio</label>
+                                                <input type="text" class="form-control" v-model="form.Tipo_negocio">
+                                            </el-form-item>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <el-form-item prop="Pib" :rules="rules.Pib">
+                                                <label>$ Producto Interno Bruto</label>
+                                                <input type="number" class="form-control" min="0"  step="0.00" v-model="form.Pib" @change="calcularDonacion">
+                                            </el-form-item>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                  <div class="col-md-4">
+                                      <div class="form-group">
+                                          <el-form-item prop="Donacion_porcentaje" :rules="rules.Donacion_porcentaje">
+                                            <label>Porcentaje donacion</label> <br />
+                                            <el-radio-group v-model="form.Donacion_porcentaje" size="medium" @change="calcularDonacion">
+                                              <el-radio-button label="5">5%</el-radio-button>
+                                              <el-radio-button label="10">10%</el-radio-button>
+                                            </el-radio-group>
+                                          </el-form-item>
+                                      </div>
+                                  </div>
+
+                                  <div class="col-md-4">
+                                      <div class="form-group">
+                                          <el-form-item>
+                                              <label>$ Donacion</label>
+                                              <input type="text" class="form-control" v-model="total_donacion" readonly>
+                                          </el-form-item>
+                                      </div>
+                                  </div>
+
+                                  <div class="col-md-4">
+                                      <div class="form-group">
+                                          <el-form-item prop="Direccion" :rules="rules.Direccion">
+                                              <label>Direccion</label>
+                                              <input type="text" class="form-control" v-model="form.Direccion">
+                                          </el-form-item>
+                                      </div>
+                                  </div>
+                                </div>
+
+                                <el-form-item>
+                                    <el-button @click="clearInputs()" type="danger" size="mini"><i class="fal fa-times"></i> Cancel</el-button>
+                                    <el-button type="primary" @click="submitForm('form')" size="mini"><i class="fal fa-save"></i> Guardar</el-button>
+                                </el-form-item>
+                            </el-form>
+
+                        </el-tab-pane>
+                    </el-tabs>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://unpkg.com/vue/dist/vue.js"></script>
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script>
+        /*window.onbeforeunload = function() {
+                    return "Desea realmente recargar la página?";
+                }*/
+
+        new Vue({
+            el: '#app',
+            components: {},
+            data: {
+
+                errors: [],
+
+                total_donacion: "",
+                loading: false,
+                clientes: [],
+
+                form: {
+                    Nombre: "",
+                    Pib: "",
+                    Tipo_negocio: "",
+                    Donacion_porcentaje: "",
+                    Direccion: "",
+                },
+                rules: {
+                    Nombre: [{ required: true, message: 'Requerido', trigger: 'blur' }],
+                    Pib: [{ required: true, message: 'Requerido de tipo integer', trigger: 'blur' }],
+                    Tipo_negocio: [{ required: true, message: 'Requerido', trigger: 'blur' }],
+                    Direccion: [{ required: true, message: 'Requerido', trigger: 'blur' }],
+                    Donacion_porcentaje: [{ required: true, message: 'Requerido', trigger: 'blur' }],
+                }
+            },
+            mounted() {
+                this.$loading({ fullscreen: true });
+                let urlPostQr = axios.get('http://localhost:59681/Api/ClienteApi')
+
+                return urlPostQr.then((callback) => {
+                    this.clientes = callback.data;
+                    this.$loading({ fullscreen: true }).close();
+                    this.loading = true;
+                    return;
+                });
+
+            },
+            computed: {
+
+            },
+            methods: {
+                submitForm (formName) {
+                  this.$refs[formName].validate(valid => {
+                    if (valid) {
+                      console.log(this.form)
+                      axios.post('http://localhost:59681/Api/ClienteApi', this.form)
+                        .then(response => {
+                          console.log(response.data);
+                          this.clearInputs();
+                        })
+                        .catch(e => {
+                          this.errors.push(e);
+                        })
+                    }
+                  })
+                },
+                calcularDonacion(ctx){
+                  if (this.form.Pib != "" && this.form.Donacion_porcentaje !="" ) {
+                    //console.log(ctx);
+                    this.total_donacion = (this.form.Pib * this.form.Donacion_porcentaje) / 100;
+                  }
+                },
+                clearInputs () {
+                  this.form = {
+                    Nombre: "",
+                    Pib: "",
+                    Tipo_negocio: "",
+                    Donacion_porcentaje: "",
+                    direccion: "",
+                  }
+                },
+            }
+        })
+    </script>
+</body>
+
+</html>
