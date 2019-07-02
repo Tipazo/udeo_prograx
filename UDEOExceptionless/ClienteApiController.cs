@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using UDEOExceptionless.DB;
 
 namespace UDEOExceptionless
 {
@@ -11,6 +12,7 @@ namespace UDEOExceptionless
     {
         private UdeoEntities db = new UdeoEntities();
         public ExceptionLess_ ex = new ExceptionLess_();
+        public ClientesDb db2 = new ClientesDb(new Connection());
 
         // GET api/<controller>
         public IQueryable<Cliente> Get()
@@ -18,6 +20,7 @@ namespace UDEOExceptionless
             try
             {
                 ex.info("Entrando a lista de Clientes");
+                //return db2.getAll();
                 return db.Clientes;
             } catch (Exception e)
             {

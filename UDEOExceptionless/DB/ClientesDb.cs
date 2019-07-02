@@ -10,10 +10,12 @@ namespace UDEOExceptionless.DB
     {
         private readonly Connection conn;
 
-        ClientesDb()
+        public ClientesDb(Connection co)
         {
-            conn = new Connection();
+            conn = co;
         }
+
+
 
         public List<string> getAll()
         {
@@ -31,6 +33,8 @@ namespace UDEOExceptionless.DB
                     c.Add(conn.sqlDataReader[0].ToString());
                 }
             }
+
+            conn.connection.Close();
 
             return c;
         }
