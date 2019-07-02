@@ -196,12 +196,15 @@
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
     <Compile Include="ClienteApiController.cs" />
+    <Compile Include="DB\ClientesDb.cs" />
+    <Compile Include="DB\Connection.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ValuesController.cs" />
     <Compile Include="Donacion.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
-    <Compile Include="donacion_balance.cs">
+    <Compile Include="DonacionsApiController.cs" />
+    <Compile Include="Donacion_balance1.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
     <Compile Include="ExceptionLess_.cs" />

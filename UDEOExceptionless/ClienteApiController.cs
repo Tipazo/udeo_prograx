@@ -13,12 +13,11 @@ namespace UDEOExceptionless
         public ExceptionLess_ ex = new ExceptionLess_();
 
         // GET api/<controller>
-
         public IQueryable<Cliente> Get()
         {
             try
             {
-                ex.info("Lista de Clientes");
+                ex.info("Entrando a lista de Clientes");
                 return db.Clientes;
             } catch (Exception e)
             {
@@ -33,7 +32,6 @@ namespace UDEOExceptionless
         {
             return "value";
         }
-
 
 
         // POST api/<controller>
@@ -51,28 +49,6 @@ namespace UDEOExceptionless
                 throw;
             }
         }
-
-        /*public IHttpActionResult Post(Cliente cliente)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            try
-            {
-                ex.info("Creando nuevo cliente");
-                db.Clientes.Add(cliente);
-                db.SaveChanges();
-                return CreatedAtRoute("DefaultApi", new { id = cliente.id }, cliente);
-            }
-            catch (Exception e)
-            {
-                ex.error("Error en mostar data clientes");
-                return null;
-            }
-        }*/
-
 
         // PUT api/<controller>/5
         public void Put(int id, [FromBody]string value)

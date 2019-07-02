@@ -12,7 +12,7 @@ namespace UDEOExceptionless
     using System;
     using System.Collections.Generic;
     
-    public partial class donacion_balance
+    public partial class Donacion_balance1
     {
         public int Id { get; set; }
         public int donacion_id { get; set; }

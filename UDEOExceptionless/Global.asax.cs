@@ -14,6 +14,8 @@ namespace UDEOExceptionless
     {
         protected void Application_Start()
         {
+
+
             ExceptionlessClient.Default.Configuration.DefaultData["FirstName"] = "Eduardo Tipaz";
             ExceptionlessClient.Default.Configuration.DefaultData["IgnoredProperty"] = "Some random data";
 

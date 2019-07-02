@@ -5,13 +5,13 @@
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
       <Diagram DiagramId="bb20d25500d24f7abcfb9edab17e77c2" Name="Diagram1">
-        <EntityTypeShape EntityType="UdeoModel.Balance" Width="1.5" PointX="7.625" PointY="1.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="UdeoModel.Balance" Width="1.5" PointX="8.5" PointY="0.875" IsExpanded="true" />
         <EntityTypeShape EntityType="UdeoModel.Cliente" Width="1.5" PointX="0.75" PointY="1" IsExpanded="true" />
         <EntityTypeShape EntityType="UdeoModel.Donacion" Width="1.5" PointX="3" PointY="1" IsExpanded="true" />
-        <EntityTypeShape EntityType="UdeoModel.donacion_balance" Width="1.5" PointX="5.25" PointY="1.125" IsExpanded="true" />
-        <AssociationConnector Association="UdeoModel.FK_donacion_balance_Balance" ManuallyRouted="false" />
         <AssociationConnector Association="UdeoModel.FK_Donacion_Cliente" ManuallyRouted="false" />
-        <AssociationConnector Association="UdeoModel.FK_donacion_balance_Donacion" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="UdeoModel.Donacion_balance1" Width="1.5" PointX="5.5" PointY="1.375" />
+        <AssociationConnector Association="UdeoModel.FK_donacion_balance_Balance1" />
+        <AssociationConnector Association="UdeoModel.FK_donacion_balance_Donacion1" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

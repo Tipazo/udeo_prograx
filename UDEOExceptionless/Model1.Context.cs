@@ -28,6 +28,6 @@ namespace UDEOExceptionless
         public virtual DbSet<Balance> Balances { get; set; }
         public virtual DbSet<Cliente> Clientes { get; set; }
         public virtual DbSet<Donacion> Donacions { get; set; }
-        public virtual DbSet<donacion_balance> donacion_balance { get; set; }
+        public virtual DbSet<Donacion_balance1> Donacion_balance11 { get; set; }
     }
 }

@@ -23,9 +23,9 @@ namespace UDEOExceptionless
         public int id { get; set; }
         public string Nombre { get; set; }
         public decimal Pib { get; set; }
-        public string Donacion { get; set; }
         public string Direccion { get; set; }
         public string Tipo_negocio { get; set; }
+        public string Donacion_porcentaje { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Donacion> Donacions { get; set; }

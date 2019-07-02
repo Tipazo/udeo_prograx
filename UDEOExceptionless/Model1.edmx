@@ -26,7 +26,7 @@
           <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Nombre" Type="varchar" MaxLength="100" Nullable="false" />
           <Property Name="Pib" Type="decimal" Precision="18" Scale="2" Nullable="false" />
-          <Property Name="Donacion" Type="varchar" MaxLength="2" Nullable="false" />
+          <Property Name="Donacion_porcentaje" Type="varchar" MaxLength="2" Nullable="false" />
           <Property Name="Direccion" Type="varchar" MaxLength="100" Nullable="false" />
           <Property Name="Tipo_negocio" Type="varchar" MaxLength="100" Nullable="false" />
         </EntityType>
@@ -36,11 +36,11 @@
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Cliente_id" Type="int" Nullable="false" />
-          <Property Name="Mes" Type="numeric" Precision="2" Scale="0" Nullable="false" />
-          <Property Name="Anio" Type="numeric" Precision="5" Scale="0" Nullable="false" />
-          <Property Name="Donacion" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="Mes" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="Anio" Type="varchar" MaxLength="4" Nullable="false" />
+          <Property Name="Donacion_monto" Type="decimal" Precision="18" Scale="2" Nullable="false" />
         </EntityType>
-        <EntityType Name="donacion_balance">
+        <EntityType Name="Donacion_balance">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
@@ -50,24 +50,24 @@
         </EntityType>
         <Association Name="FK_donacion_balance_Balance">
           <End Role="Balance" Type="Self.Balance" Multiplicity="1" />
-          <End Role="donacion_balance" Type="Self.donacion_balance" Multiplicity="*" />
+          <End Role="Donacion_balance" Type="Self.Donacion_balance" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Balance">
               <PropertyRef Name="Id" />
             </Principal>
-            <Dependent Role="donacion_balance">
+            <Dependent Role="Donacion_balance">
               <PropertyRef Name="balance_id" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_donacion_balance_Donacion">
           <End Role="Donacion" Type="Self.Donacion" Multiplicity="1" />
-          <End Role="donacion_balance" Type="Self.donacion_balance" Multiplicity="*" />
+          <End Role="Donacion_balance" Type="Self.Donacion_balance" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Donacion">
               <PropertyRef Name="Id" />
             </Principal>
-            <Dependent Role="donacion_balance">
+            <Dependent Role="Donacion_balance">
               <PropertyRef Name="donacion_id" />
             </Dependent>
           </ReferentialConstraint>
@@ -88,14 +88,14 @@
           <EntitySet Name="Balance" EntityType="Self.Balance" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Cliente" EntityType="Self.Cliente" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Donacion" EntityType="Self.Donacion" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="donacion_balance" EntityType="Self.donacion_balance" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Donacion_balance" EntityType="Self.Donacion_balance" Schema="dbo" store:Type="Tables" />
           <AssociationSet Name="FK_donacion_balance_Balance" Association="Self.FK_donacion_balance_Balance">
             <End Role="Balance" EntitySet="Balance" />
-            <End Role="donacion_balance" EntitySet="donacion_balance" />
+            <End Role="Donacion_balance" EntitySet="Donacion_balance" />
           </AssociationSet>
           <AssociationSet Name="FK_donacion_balance_Donacion" Association="Self.FK_donacion_balance_Donacion">
             <End Role="Donacion" EntitySet="Donacion" />
-            <End Role="donacion_balance" EntitySet="donacion_balance" />
+            <End Role="Donacion_balance" EntitySet="Donacion_balance" />
           </AssociationSet>
           <AssociationSet Name="FK_Donacion_Cliente" Association="Self.FK_Donacion_Cliente">
             <End Role="Cliente" EntitySet="Cliente" />
@@ -119,7 +119,7 @@
           <Property Name="Total" Type="Decimal" Precision="18" Scale="0" Nullable="false" />
           <Property Name="Mes" Type="String" MaxLength="2" FixedLength="true" Unicode="false" Nullable="false" />
           <Property Name="Anio" Type="String" MaxLength="5" FixedLength="true" Unicode="false" Nullable="false" />
-          <NavigationProperty Name="donacion_balance" Relationship="Self.FK_donacion_balance_Balance" FromRole="Balance" ToRole="donacion_balance" />
+          <NavigationProperty Name="Donacion_balance" Relationship="UdeoModel.FK_donacion_balance_Balance1" FromRole="Balance" ToRole="Donacion_balance1" />
         </EntityType>
         <EntityType Name="Cliente">
           <Key>
@@ -128,10 +128,10 @@
           <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Nombre" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="Pib" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
-          <Property Name="Donacion" Type="String" MaxLength="2" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="Direccion" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="Tipo_negocio" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
           <NavigationProperty Name="Donacions" Relationship="Self.FK_Donacion_Cliente" FromRole="Cliente" ToRole="Donacion" />
+          <Property Name="Donacion_porcentaje" Type="String" Nullable="false" MaxLength="2" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="Donacion">
           <Key>
@@ -139,34 +139,12 @@
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Cliente_id" Type="Int32" Nullable="false" />
-          <Property Name="Mes" Type="Decimal" Precision="2" Scale="0" Nullable="false" />
-          <Property Name="Anio" Type="Decimal" Precision="5" Scale="0" Nullable="false" />
-          <Property Name="Donacion1" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="Mes" Type="String" Nullable="false" MaxLength="20" Unicode="false" FixedLength="false" />
+          <Property Name="Anio" Type="String" Nullable="false" MaxLength="4" Unicode="false" FixedLength="false" />
           <NavigationProperty Name="Cliente" Relationship="Self.FK_Donacion_Cliente" FromRole="Donacion" ToRole="Cliente" />
-          <NavigationProperty Name="donacion_balance" Relationship="Self.FK_donacion_balance_Donacion" FromRole="Donacion" ToRole="donacion_balance" />
+          <Property Name="Donacion_monto" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
+          <NavigationProperty Name="Donacion_balance" Relationship="UdeoModel.FK_donacion_balance_Donacion1" FromRole="Donacion" ToRole="Donacion_balance1" />
         </EntityType>
-        <EntityType Name="donacion_balance">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="donacion_id" Type="Int32" Nullable="false" />
-          <Property Name="balance_id" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="Balance" Relationship="Self.FK_donacion_balance_Balance" FromRole="donacion_balance" ToRole="Balance" />
-          <NavigationProperty Name="Donacion" Relationship="Self.FK_donacion_balance_Donacion" FromRole="donacion_balance" ToRole="Donacion" />
-        </EntityType>
-        <Association Name="FK_donacion_balance_Balance">
-          <End Role="Balance" Type="Self.Balance" Multiplicity="1" />
-          <End Role="donacion_balance" Type="Self.donacion_balance" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Balance">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="donacion_balance">
-              <PropertyRef Name="balance_id" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_Donacion_Cliente">
           <End Role="Cliente" Type="Self.Cliente" Multiplicity="1" />
           <End Role="Donacion" Type="Self.Donacion" Multiplicity="*" />
@@ -179,36 +157,58 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_donacion_balance_Donacion">
-          <End Role="Donacion" Type="Self.Donacion" Multiplicity="1" />
-          <End Role="donacion_balance" Type="Self.donacion_balance" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Donacion">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="donacion_balance">
-              <PropertyRef Name="donacion_id" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <EntityContainer Name="UdeoEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="Balances" EntityType="Self.Balance" />
           <EntitySet Name="Clientes" EntityType="Self.Cliente" />
           <EntitySet Name="Donacions" EntityType="Self.Donacion" />
-          <EntitySet Name="donacion_balance" EntityType="Self.donacion_balance" />
-          <AssociationSet Name="FK_donacion_balance_Balance" Association="Self.FK_donacion_balance_Balance">
-            <End Role="Balance" EntitySet="Balances" />
-            <End Role="donacion_balance" EntitySet="donacion_balance" />
-          </AssociationSet>
           <AssociationSet Name="FK_Donacion_Cliente" Association="Self.FK_Donacion_Cliente">
             <End Role="Cliente" EntitySet="Clientes" />
             <End Role="Donacion" EntitySet="Donacions" />
           </AssociationSet>
-          <AssociationSet Name="FK_donacion_balance_Donacion" Association="Self.FK_donacion_balance_Donacion">
+          <EntitySet Name="Donacion_balance11" EntityType="UdeoModel.Donacion_balance1" />
+          <AssociationSet Name="FK_donacion_balance_Balance1" Association="UdeoModel.FK_donacion_balance_Balance1">
+            <End Role="Balance" EntitySet="Balances" />
+            <End Role="Donacion_balance1" EntitySet="Donacion_balance11" />
+          </AssociationSet>
+          <AssociationSet Name="FK_donacion_balance_Donacion1" Association="UdeoModel.FK_donacion_balance_Donacion1">
             <End Role="Donacion" EntitySet="Donacions" />
-            <End Role="donacion_balance" EntitySet="donacion_balance" />
+            <End Role="Donacion_balance1" EntitySet="Donacion_balance11" />
           </AssociationSet>
         </EntityContainer>
+        <EntityType Name="Donacion_balance1">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="donacion_id" Type="Int32" Nullable="false" />
+          <Property Name="balance_id" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Balance" Relationship="UdeoModel.FK_donacion_balance_Balance1" FromRole="Donacion_balance1" ToRole="Balance" />
+          <NavigationProperty Name="Donacion" Relationship="UdeoModel.FK_donacion_balance_Donacion1" FromRole="Donacion_balance1" ToRole="Donacion" />
+        </EntityType>
+        <Association Name="FK_donacion_balance_Balance1">
+          <End Type="UdeoModel.Balance" Role="Balance" Multiplicity="1" />
+          <End Type="UdeoModel.Donacion_balance1" Role="Donacion_balance1" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Balance">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Donacion_balance1">
+              <PropertyRef Name="balance_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_donacion_balance_Donacion1">
+          <End Type="UdeoModel.Donacion" Role="Donacion" Multiplicity="1" />
+          <End Type="UdeoModel.Donacion_balance1" Role="Donacion_balance1" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Donacion">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Donacion_balance1">
+              <PropertyRef Name="donacion_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -233,10 +233,10 @@
           <EntitySetMapping Name="Clientes">
             <EntityTypeMapping TypeName="UdeoModel.Cliente">
               <MappingFragment StoreEntitySet="Cliente">
+                <ScalarProperty Name="Donacion_porcentaje" ColumnName="Donacion_porcentaje" />
                 <ScalarProperty Name="id" ColumnName="id" />
                 <ScalarProperty Name="Nombre" ColumnName="Nombre" />
                 <ScalarProperty Name="Pib" ColumnName="Pib" />
-                <ScalarProperty Name="Donacion" ColumnName="Donacion" />
                 <ScalarProperty Name="Direccion" ColumnName="Direccion" />
                 <ScalarProperty Name="Tipo_negocio" ColumnName="Tipo_negocio" />
               </MappingFragment>
@@ -245,20 +245,20 @@
           <EntitySetMapping Name="Donacions">
             <EntityTypeMapping TypeName="UdeoModel.Donacion">
               <MappingFragment StoreEntitySet="Donacion">
+                <ScalarProperty Name="Donacion_monto" ColumnName="Donacion_monto" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Cliente_id" ColumnName="Cliente_id" />
                 <ScalarProperty Name="Mes" ColumnName="Mes" />
                 <ScalarProperty Name="Anio" ColumnName="Anio" />
-                <ScalarProperty Name="Donacion1" ColumnName="Donacion" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="donacion_balance">
-            <EntityTypeMapping TypeName="UdeoModel.donacion_balance">
-              <MappingFragment StoreEntitySet="donacion_balance">
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="donacion_id" ColumnName="donacion_id" />
+          <EntitySetMapping Name="Donacion_balance11">
+            <EntityTypeMapping TypeName="UdeoModel.Donacion_balance1">
+              <MappingFragment StoreEntitySet="Donacion_balance">
                 <ScalarProperty Name="balance_id" ColumnName="balance_id" />
+                <ScalarProperty Name="donacion_id" ColumnName="donacion_id" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

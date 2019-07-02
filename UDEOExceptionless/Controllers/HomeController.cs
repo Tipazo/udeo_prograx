@@ -13,7 +13,7 @@ namespace UDEOExceptionless.Controllers
         {
             ViewBag.Title = "Home Page";
             // Submit logs
-            ExceptionlessClient.Default.SubmitLog("Logging made easy");
+           /* ExceptionlessClient.Default.SubmitLog("Logging made easy");
 
             // You can also specify the log source and log level.
             // We recommend specifying one of the following log levels: Trace, Debug, Info, Warn, Error
@@ -27,6 +27,7 @@ namespace UDEOExceptionless.Controllers
             // Submit a 404
             ExceptionlessClient.Default.SubmitNotFound("/somepage");
             ExceptionlessClient.Default.CreateNotFound("/somepage").AddTags("Exceptionless").Submit();
+            */
             return View();
         }
     }

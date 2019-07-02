@@ -17,17 +17,17 @@ namespace UDEOExceptionless
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Donacion()
         {
-            this.donacion_balance = new HashSet<donacion_balance>();
+            this.Donacion_balance = new HashSet<Donacion_balance1>();
         }
     
         public int Id { get; set; }
         public int Cliente_id { get; set; }
-        public decimal Mes { get; set; }
-        public decimal Anio { get; set; }
-        public decimal Donacion1 { get; set; }
+        public string Mes { get; set; }
+        public string Anio { get; set; }
+        public decimal Donacion_monto { get; set; }
     
         public virtual Cliente Cliente { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<donacion_balance> donacion_balance { get; set; }
+        public virtual ICollection<Donacion_balance1> Donacion_balance { get; set; }
     }
 }

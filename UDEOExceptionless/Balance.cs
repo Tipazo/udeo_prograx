@@ -17,7 +17,7 @@ namespace UDEOExceptionless
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Balance()
         {
-            this.donacion_balance = new HashSet<donacion_balance>();
+            this.Donacion_balance = new HashSet<Donacion_balance1>();
         }
     
         public int Id { get; set; }
@@ -31,6 +31,6 @@ namespace UDEOExceptionless
         public string Anio { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<donacion_balance> donacion_balance { get; set; }
+        public virtual ICollection<Donacion_balance1> Donacion_balance { get; set; }
     }
 }

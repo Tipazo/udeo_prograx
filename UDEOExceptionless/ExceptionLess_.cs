@@ -11,13 +11,8 @@ namespace UDEOExceptionless
 
         public void info(string string1)
         {
-
-            // Submit logs
-            ExceptionlessClient.Default.SubmitLog("Logging made easy");
-
-            // You can also specify the log source and log level.
             // We recommend specifying one of the following log levels: Trace, Debug, Info, Warn, Error
-            ExceptionlessClient.Default.SubmitLog(typeof(InvalidProgramException).FullName, string1, "Info");
+            //ExceptionlessClient.Default.SubmitLog(typeof(InvalidProgramException).FullName, string1, "Info");
             ExceptionlessClient.Default.CreateLog(typeof(InvalidProgramException).FullName, string1, "Info").AddTags("CiudadDelDollar").Submit();
 
         }
